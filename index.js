@@ -11,10 +11,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const middleware = require("./helper/authenMiddleware");
-
 const UserRouter = require("./userController");
-
 const AccRouter = require("./accController");
+const User_Profile = require("./profileController");
 
 var mongoDB_user = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/Production?retryWrites=true&w=majority`;
 var mongoDB_dev = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/Dev?retryWrites=true&w=majority`;
@@ -22,7 +21,7 @@ var local_mongoDB = `mongodb://localhost:27017/ANONYMOUS_dev`
 mongoose.connect(local_mongoDB,
     {
         useNewUrlParser: true,
-        useUnifiedTopology: true 
+        useUnifiedTopology: true
     },
     function (err) {
         if (err) throw err;
@@ -33,10 +32,9 @@ mongoose.connect(local_mongoDB,
 mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
-
-app.use("/user", middleware.authenticateJWT, UserRouter);
-
 app.use("/", AccRouter);
+app.use("/user", middleware.authenticateJWT, UserRouter);
+app.use("/profile", middleware.authenticateJWT, User_Profile);
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
