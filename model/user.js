@@ -1,12 +1,21 @@
 var mongoose = require("mongoose");
 
 var userSchema = mongoose.Schema({
-	name: String,
-	email: {
-		type: String,
-		unique: true,
+	username: String,
+	hash: String,
+	salt: process.env.SECRET_KEY,
+	role: 'user' || 'admin',
+	photoUrl: String,
+	displayName: String,
+	gender: String,
+	email: String,
+	phone: String,
+	address: {
+		city: String,
+		district: String,
+		wards: String,
+		detail: String,
 	},
-	password: String,
 	createdDate: {
 		type: Date,
 		default: Date.now,

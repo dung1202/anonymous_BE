@@ -6,13 +6,13 @@ const jwt = require('jsonwebtoken')
 const saltRounds = 10;
 
 router.post('/signup', async (req, res) => {
-    const emailExist = await User.findOne({ email: req.body.email })
+    const emailExist = await User.findOne({ username: req.body.username })
     if (emailExist) {
-        return res.status(200).send({ error: 'Email already exists.' })
+        return res.status(200).send({ error: 'username already exists.' })
     }
 
-    let hashPassword = await bcrypt.hash(req.body.password, saltRounds);
-    req.body.password = hashPassword;
+    let hashPassword = await bcrypt.hash(req.body.hash, saltRounds);
+    req.body.hash = hashPassword;
     let user = new User(req.body);
 
     user.save(err => {
@@ -24,16 +24,16 @@ router.post('/signup', async (req, res) => {
 
 router.post('/signin', async (req, res) => {
     let checkPass = false;
-    const { email, password } = req.body
-    const user = await User.findOne({ email: email })
+    const { username, hash } = req.body
+    const user = await User.findOne({ username: username })
 
     if (user) {
-        checkPass = bcrypt.compareSync(password, user.password);
+        checkPass = bcrypt.compareSync(hash, user.hash);
     }
 
     if (user && checkPass) {
         const accessToken = jwt.sign({
-            email: user.email,
+            username: user.username,
             _id: user._id
         }, process.env.SECRET_KEY)
         return res.json({ accessToken })
