@@ -7,12 +7,6 @@ var userSchema = mongoose.Schema({
 		type: Number,
 		default: 10,
 	},
-
-
-
-
-
-	
 	role: {
 		type: String,
 		default: 'user'
