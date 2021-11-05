@@ -3,26 +3,29 @@ const router = express.Router()
 const User = require('./model/user')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
-const saltRounds = 10;
 
-router.post('/signup', async (req, res) => {
+
+router.post('/register', async (req, res) => {
     const emailExist = await User.findOne({ username: req.body.username })
     if (emailExist) {
         return res.status(200).send({ error: 'username already exists.' })
     }
-
-    let hashPassword = await bcrypt.hash(req.body.hash, saltRounds);
+    if (req.body.salt > 15 || req.body.salt < 1)
+    {
+        return res.status(200).send({ error: 'salt from 1 to 15' })
+    }
+        let hashPassword = await bcrypt.hash(req.body.hash, req.body.salt || 10);
     req.body.hash = hashPassword;
     let user = new User(req.body);
 
-    user.save(err => {
-        if (err) throw err
-        console.log('User save successfully')
-    })
+    // user.save(err => {
+    //     if (err) throw err
+    //     console.log('User save successfully')
+    // })
     res.json({ user })
 })
 
-router.post('/signin', async (req, res) => {
+router.post('/login', async (req, res) => {
     let checkPass = false;
     const { username, hash } = req.body
     const user = await User.findOne({ username: username })

@@ -3,8 +3,14 @@ var mongoose = require("mongoose");
 var userSchema = mongoose.Schema({
 	username: String,
 	hash: String,
-	salt: process.env.SECRET_KEY,
-	role: 'user' || 'admin',
+	salt: {
+		type: Number,
+		default: 10,
+	},
+	role: {
+		type: String,
+		default: 'user'
+	},
 	photoUrl: String,
 	displayName: String,
 	gender: String,
@@ -16,6 +22,7 @@ var userSchema = mongoose.Schema({
 		wards: String,
 		detail: String,
 	},
+	dob: Date,
 	createdDate: {
 		type: Date,
 		default: Date.now,
