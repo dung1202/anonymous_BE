@@ -17,7 +17,9 @@ jobs:
     - name: push
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-       run: git push -f https://heroku:${{ secrets.HEROKU_API_TOKEN }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git origin/master:master
+       run: git push -f https://git.heroku.com/${{secrets.HEROKU_API_NAME}}.git
+       
+
     - name: Release
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
