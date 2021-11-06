@@ -1,9 +1,4 @@
-
-LABEL "com.github.actions.name"="Hello World"
-LABEL "com.github.actions.description"="Write arguments to the standard output"
-LABEL "com.github.actions.icon"="mic"
-LABEL "com.github.actions.color"="purple"
-
-LABEL "repository"="http://github.com/dung1202/anonymous_BE"
-LABEL "homepage"="http://github.com/actions"
-LABEL "maintainer"="Jeff Dickey"
+FROM ubuntu:18.04
+COPY . /app
+RUN make /app
+CMD python /app/app.py
