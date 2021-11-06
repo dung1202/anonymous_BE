@@ -9,9 +9,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_API_NAME}}
-          heroku_email: "phamtiendung12022001@gmail.com"
-          buildpack: "https://github.com/dung1202/anonymous_BE.git"
+          heroku_email: ${{secrets.HEROKU_API_EMAIL}}
+          buildpack: ${{secrets.HEROKU_API_GIT}}
