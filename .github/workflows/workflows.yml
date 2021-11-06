@@ -1,26 +1,27 @@
-name: Push Container to Heroku
+name: Deploy
 
-on: 
+on:
   push:
     branches:
       - master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v1
-    - name: Login to Heroku Container registry
-      env: 
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:login 
-    - name: push
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-       run: git push -f https://git.heroku.com/${{secrets.HEROKU_API_NAME}}.git
-       
+      - uses: actions/checkout@v2
+      - name: Updating Ubuntu system and Heroku
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: sudo apt update && sudo apt install heroku neofetch
+      - name: Checking the info
+        run: neofetch
 
-    - name: Release
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME}} web 
+      - uses: akhileshns/heroku-deploy@v3.8.8
+        with:
+          heroku_email: phamtiendung12022001@gmail.com
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_API_NAME}}
+          branch: HEAD
+          useforce: false
+          dynamicFiles: false
