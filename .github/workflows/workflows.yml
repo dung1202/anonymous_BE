@@ -15,6 +15,6 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}    
           heroku_app_name: "peaceful-coast-32491"
           heroku_email: "phamtiendung12022001@gmail.com"
-          usedocker: true
+          usedocker: false
           healthcheck: "https://peaceful-coast-32491.herokuapp.com/"
       - run: npm run test-action https://peaceful-coast-32491.herokuapp.com/
