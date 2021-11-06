@@ -10,18 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Updating Ubuntu system and Heroku
-        env: 
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: sudo apt update && sudo apt install heroku neofetch
-      - name: Checking the info
-        run: neofetch
-
-      - uses: akhileshns/heroku-deploy@v3.8.8
+      - uses: akhileshns/heroku-deploy@v3.12.12
         with:
           heroku_email: phamtiendung12022001@gmail.com
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{secrets.HEROKU_API_NAME}}
-          branch: HEAD
-          useforce: false
-          dynamicFiles: false
+          buildpack: "https://github.com/dung1202/anonymous_BE.git"
