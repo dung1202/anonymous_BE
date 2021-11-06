@@ -16,9 +16,7 @@ jobs:
       run: heroku container:login 
 
     - name: npm install and build
-      run: |
-        npm i
-        npm run build
+      run: npm i
     - name: push
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
