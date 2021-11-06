@@ -15,3 +15,10 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}    
           heroku_app_name: ${{secrets.HEROKU_API_NAME}}
           heroku_email: ${{secrets.HEROKU_API_EMAIL}}
+          usedocker: true
+          docker_build_args: |
+            NODE_ENV
+            SECRET_KEY
+        env:
+          NODE_ENV: production
+          SECRET_KEY: ${{ secrets.MY_SECRET_KEY }}
