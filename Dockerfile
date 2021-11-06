@@ -1,3 +1,3 @@
-# FROM ubuntu
-# ENTRYPOINT ["top", "-b"]
-# CMD ["-c"]
+FROM ubuntu
+ENTRYPOINT ["top", "-b"]
+CMD ["-c"]
