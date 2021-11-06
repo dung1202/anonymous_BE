@@ -5,13 +5,16 @@ var userSchema = mongoose.Schema({
 	hash: String,
 	salt: {
 		type: Number,
-		default: 10,
+		default: 10
 	},
 	role: {
 		type: String,
 		default: 'user'
 	},
-	photoUrl: String,
+	photoUrl: {
+		type: String,
+		default: 'acc_clone.png'
+	},
 	displayName: String,
 	gender: String,
 	email: String,
