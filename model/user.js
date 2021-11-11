@@ -13,7 +13,7 @@ var userSchema = mongoose.Schema({
 	},
 	photoUrl: {
 		type: String,
-		default: 'acc_clone.png'
+		default: `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent('acc_clone.png')}?alt=media`
 	},
 	displayName: String,
 	gender: String,
