@@ -34,7 +34,7 @@ router.put("/:id", constants.upload.single("file"), async (req, res) => {
 	if (!req.file) {
 		return res.status(400).send("Error: No files found")
 	}
-	const filename = 'user' + '-' + `${id}` + '-' + req.file.originalname
+	const filename = 'user' + '-' + `${id}` + '-' + 'avatar'
 	const blob = firebase.bucket.file(filename)
 
 	const blobWriter = blob.createWriteStream({
