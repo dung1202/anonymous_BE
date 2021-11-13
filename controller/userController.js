@@ -29,26 +29,27 @@ router.delete("/:id", (req, res) => {
 	});
 });
 
-router.put("/:id", constants.upload.single("file"), async (req, res) => {
-	let id = req.params.id;
-	if (!req.file) {
-		return res.status(400).send("Error: No files found")
+router.put("/", constants.upload.single("file"), (req, res) => {
+	const filename = 'acc_clone.png'
+	const id = { _id: req.body.id }
+
+	if (req.file) {
+		filename = 'user' + '-' + `${id}` + '-' + 'avatar'
+		const blob = firebase.bucket.file(filename)
+
+		const blobWriter = blob.createWriteStream({
+			metadata: {
+				contentType: req.file.mimetype
+			}
+		})
+
+		blobWriter.on('error', (err) => {
+			console.log(err)
+		})
+
+		blobWriter.end(req.file.buffer)
 	}
-	const filename = 'user' + '-' + `${id}` + '-' + 'avatar'
-	const blob = firebase.bucket.file(filename)
-
-	const blobWriter = blob.createWriteStream({
-		metadata: {
-			contentType: req.file.mimetype
-		}
-	})
-
-	blobWriter.on('error', (err) => {
-		console.log(err)
-	})
-
-	blobWriter.end(req.file.buffer)
-	let update = req.body;
+	const update = req.body;
 	update.photoUrl = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
 	User.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
 		if (err) return res.send(err);

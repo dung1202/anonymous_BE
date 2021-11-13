@@ -69,38 +69,37 @@ router.post('/', constants.upload.any("file"), async (req, res) => {
     res.json({ "data": product })
 })
 
-router.put('/:id', constants.upload.any("file"), async (req, res) => {
-    if (!req.files) {
-        return res.status(400).send("Error: No files found")
-    }
-    if (!req.params.id)
+router.put('/', constants.upload.any("file"), async (req, res) => {
+
+    if (!req.body.id)
         res.status(400).send({ messError: 'not found id' })
-    const id = { _id: req.params.id };
-
+    const id = { _id: req.body.id };
     const name = []
-    for (let i = 0; i < req.files.length; i++) {
-        const filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}`
-        const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
-        name.push(link)
-        const blob = firebase.bucket.file(filename)
+    if (req.files) {
 
-        const blobWriter = blob.createWriteStream({
-            metadata: {
-                contentType: req.files[i].mimetype
-            }
-        })
+        for (let i = 0; i < req.files.length; i++) {
+            const filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}`
+            const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
+            name.push(link)
+            const blob = firebase.bucket.file(filename)
 
-        blobWriter.on('error', (err) => {
-            return console.log(err)
-        })
+            const blobWriter = blob.createWriteStream({
+                metadata: {
+                    contentType: req.files[i].mimetype
+                }
+            })
 
-        blobWriter.on('finish', () => {
-            res.status(200).send("File uploaded.")
-        })
+            blobWriter.on('error', (err) => {
+                return console.log(err)
+            })
 
-        blobWriter.end(req.files[i].buffer)
+            blobWriter.on('finish', () => {
+                res.status(200).send("File uploaded.")
+            })
+
+            blobWriter.end(req.files[i].buffer)
+        }
     }
-
     const update = req.body
     update.listphotos = name
     Product.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
