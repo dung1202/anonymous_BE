@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const User = require("./model/user");
-const constants = require("./constants");
-const firebase = require('./filebase');
+const User = require("../model/user");
+const constants = require("../firebase_multer/constants");
+const firebase = require('../firebase_multer/filebase');
 
 router.get("/", (req, res) => {
 	return User.find().exec((err, users) => {

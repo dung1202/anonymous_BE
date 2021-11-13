@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const Product = require("./model/product");
-const constants = require("./constants");
-const firebase = require('./filebase');
+const Product = require("../model/product");
+const constants = require("../firebase_multer/constants");
+const firebase = require('../firebase_multer/filebase');
 
 router.get('/', (req, res) => {
     Product.find().populate('User').exec((err, product) => {
@@ -108,3 +108,5 @@ router.put('/:id', constants.upload.any("file"), async (req, res) => {
         res.json(result)
     });
 })
+
+module.exports = router;

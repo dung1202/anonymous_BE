@@ -11,8 +11,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const middleware = require("./helper/authenMiddleware");
-const UserRouter = require("./userController");
-const AccRouter = require("./accController");
+const UserRouter = require("./controller/userController");
+const AccRouter = require("./controller/accController");
+const ProductRouter = require("./controller/productController")
 
 var mongoDB_atlas = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB_atlas,
@@ -30,11 +31,14 @@ mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
 app.use("/", AccRouter);
-app.use("/user", middleware.authenticateJWT, UserRouter);
+//  middleware.authenticateJWT : them vao ben duoi khi xong frontend dang ky, dang nhap
+app.use("/user", UserRouter);
+app.use("/product", ProductRouter);
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
 app.listen(PORT, () => {
     console.log("Server started on http://localhost:" + PORT);
 });
+
 module.exports = app;
