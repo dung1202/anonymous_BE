@@ -4,6 +4,11 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+async function generateToken(payload, secretKey, tokenLife){
+    const token = await jwt.sign(payload, secretKey, {expiresIn: tokenLife});
+    return token;
+}
+
 async function verifyToken(token, secretKey){
     const decoded = await jwt.verify(token, secretKey);
     return decoded;
@@ -28,4 +33,4 @@ async function auth(req, res, next){
     }
 }
 
-module.exports = auth;
+module.exports = {generateToken, auth};
