@@ -14,7 +14,7 @@ app.use(morgan('dev'))
 
 const auth = require("./helper/auth");
 const UserRouter = require("./controller/userController");
-const AccRouter = require("./controller/accController");
+const AccRouter = require("./routes/accRouter")
 const ProductRouter = require("./controller/productController");
 const NewsRouter = require('./routes/newsRouter');
 
