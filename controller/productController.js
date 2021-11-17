@@ -101,6 +101,7 @@ router.put('/', constants.upload.any("file"), async (req, res) => {
     }
     const update = req.body
     update.listphotos = name
+    update.updateAt = Date.now(+new Date() + 7 * 60 * 60 * 1000)
     Product.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
         if (err) return res.send(err)
         res.json(result)

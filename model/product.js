@@ -13,16 +13,19 @@ var userSchema = mongoose.Schema({
     listphotos: [{
         type: String
     }],
-    // lisphotos[0] la avatar
-
-  
-    quantity: Number,
+    quantity: {
+        type: Number,
+        min: 0,
+        max: 0
+    },
     description: [{
         content: String,
-        quantity: Number
+        quantity: {
+            type: Number,
+            min: 0,
+            max: 0
+        }
     }],
-
-  
     tags: [{
         type: String
     }],
@@ -30,7 +33,12 @@ var userSchema = mongoose.Schema({
     createdAt:
     {
         type: Date,
-        default: Date.now()
+        default: Date.now(+new Date() + 7 * 60 * 60 * 1000)
+    },
+    updateAt:
+    {
+        type: Date,
+        default: Date.now(+new Date() + 7 * 60 * 60 * 1000)
     }
 });
 
