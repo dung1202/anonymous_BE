@@ -1,7 +1,6 @@
 {
   "name": "projectmongo",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,5 +24,14 @@
     "nodemon": "^2.0.7",
     "path": "^0.12.7",
     "session": "^0.1.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dung1202/anonymous_BE.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dung1202/anonymous_BE/issues"
+  },
+  "homepage": "https://github.com/dung1202/anonymous_BE#readme",
+  "description": ""
 }

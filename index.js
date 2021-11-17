@@ -5,15 +5,19 @@ dotenv.config();
 const PORT = process.env.PORT || 4000;
 const mongoose = require("mongoose");
 const cors = require("cors");
+const morgan = require('morgan')
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('dev'))
 
-const middleware = require("./helper/authenMiddleware");
+// const middleware = require("./helper/auth");
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./controller/accController");
-const ProductRouter = require("./controller/productController")
+const ProductRouter = require("./controller/productController");
+const NewsRouter = require('./routes/newsRouter');
+
 
 var mongoDB_atlas = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB_atlas,
@@ -34,6 +38,7 @@ app.use("/", AccRouter);
 //  middleware.authenticateJWT : them vao ben duoi khi xong frontend dang ky, dang nhap
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
+app.use('/news', NewsRouter);
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
