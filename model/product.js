@@ -14,18 +14,15 @@ var userSchema = mongoose.Schema({
         type: String
     }],
     // lisphotos[0] la avatar
-    quantity: {
-        type: Number,
-        max: 5,
-        min: 0
-    },
-    description: {
+
+  
+    quantity: Number,
+    description: [{
         content: String,
-        quantity: {
-            type: Number,
-            max: 5,
-            min: 0
-        },
+        quantity: Number
+    }],
+
+  
     tags: [{
         type: String
     }],
