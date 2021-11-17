@@ -6,9 +6,9 @@ const jwt = require('jsonwebtoken')
 
 
 router.post('/register', async (req, res) => {
-    const emailExist = await User.findOne({ username: req.body.username })
+    const emailExist = await User.findOne({ email: req.body.email })
     if (emailExist) {
-        return res.status(200).send({ error: 'username already exists.' })
+        return res.status(200).send({ error: 'email already exists.' })
     }
     if (req.body.salt > 15 || req.body.salt < 1)
     {
@@ -23,12 +23,13 @@ router.post('/register', async (req, res) => {
         console.log('User save successfully')
     })
     res.json({ user })
+    
 })
 
 router.post('/login', async (req, res) => {
     let checkPass = false;
-    const { username, hash } = req.body
-    const user = await User.findOne({ username: username })
+    const { email, hash } = req.body
+    const user = await User.findOne({ email: email })
 
     if (user) {
         checkPass = bcrypt.compareSync(hash, user.hash);
@@ -36,7 +37,7 @@ router.post('/login', async (req, res) => {
 
     if (user && checkPass) {
         const accessToken = jwt.sign({
-            username: user.username,
+            email: user.email,
             _id: user._id
         }, process.env.SECRET_KEY)
         return res.json({ accessToken })
