@@ -51,6 +51,7 @@ router.put("/", constants.upload.single("file"), (req, res) => {
 	}
 	const update = req.body;
 	update.photoUrl = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
+	
 	User.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
 		if (err) return res.send(err);
 		res.json(result);
