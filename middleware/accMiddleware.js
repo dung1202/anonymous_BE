@@ -1,5 +1,3 @@
-
-
 function validUsername(username){
     return /^\w{8,30}$/.test(username);
 }
@@ -45,7 +43,7 @@ function register(req, res, next){
     }
     catch(err) {
         console.log(err);
-        res.status(401).send(err);
+        res.status(400).send(err);
     }
 }
 
