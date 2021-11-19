@@ -14,17 +14,14 @@ var userSchema = mongoose.Schema({
     listphotos: [{
         type: String
     }],
-    quantity: {
-        type: Number,
-        min: 0,
-        max: 0
-    },
+    quantity: Number,
+    sold: Number,
     description: [{
         content: String,
-        quantity: {
+        vote: {
             type: Number,
             min: 0,
-            max: 0
+            max: 5
         }
     }],
     tags: [{
