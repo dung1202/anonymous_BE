@@ -34,9 +34,13 @@ router.delete("/:id", (req, res) => {
 router.post('/', constants.upload.any("file"), async (req, res) => {
     const name = []
     if (req.files) {
-        
+
         for (let i = 0; i < req.files.length; i++) {
-            const filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}`
+            const filename = ''
+            if (i !== 0) { filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}` }
+            else {
+                filename = 'product' + '-' + `${req.body.userId}` + '-' + `img`
+            }
             const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
             name.push(link)
             const blob = firebase.bucket.file(filename)
@@ -59,6 +63,8 @@ router.post('/', constants.upload.any("file"), async (req, res) => {
     }
 
     let product = new Product(req.body)
+    product.img = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(name[0])}?alt=media`
+    name.splice(0, 1)
     product.listphotos = name
 
     product.save((err) => {
