@@ -63,7 +63,7 @@ router.post('/', constants.upload.any("file"), async (req, res) => {
     }
 
     let product = new Product(req.body)
-    product.img = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(name[0])}?alt=media`
+    product.img = name[0]
     name.splice(0, 1)
     product.listphotos = name
 
