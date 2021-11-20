@@ -15,7 +15,8 @@ async function verifyToken(token, secretKey){
 }
 
 async function auth(req, res, next){
-    const accessToken = req.headers.authorization
+    let accessToken = req.headers.authorization
+
     if (!accessToken){
         res.status(403).send({error: 'No token provided'});
     }
@@ -25,6 +26,7 @@ async function auth(req, res, next){
             req.body.decoded = await verifyToken(accessToken, process.env.SECRET_KEY);
             const foundUser = await User.findById({_id: req.body.decoded._id}, {_id: 1, username: 1});
             if (!foundUser) throw {error: 'Unauthorized'};
+            console.log(foundUser, accessToken)
             next();
         }
         catch(err) {
