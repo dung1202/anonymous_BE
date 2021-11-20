@@ -16,14 +16,7 @@ var userSchema = mongoose.Schema({
     }],
     quantity: Number,
     sold: Number,
-    description: [{
-        content: String,
-        vote: {
-            type: Number,
-            min: 0,
-            max: 5
-        }
-    }],
+    description: String,
     tags: [{
         type: String
     }],
