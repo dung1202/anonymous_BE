@@ -10,12 +10,13 @@ var userSchema = mongoose.Schema({
     discountPrice: Number,
     is_hot: Boolean,
     in_slider: Boolean,
+    img: String,
     listphotos: [{
         type: String
     }],
-    // lisphotos[0] la avatar
     quantity: Number,
-    description: Number,
+    sold: Number,
+    description: String,
     tags: [{
         type: String
     }],
@@ -23,7 +24,12 @@ var userSchema = mongoose.Schema({
     createdAt:
     {
         type: Date,
-        default: Date.now()
+        default: Date.now(+new Date() + 7 * 60 * 60 * 1000)
+    },
+    updateAt:
+    {
+        type: Date,
+        default: Date.now(+new Date() + 7 * 60 * 60 * 1000)
     }
 });
 

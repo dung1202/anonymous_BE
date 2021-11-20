@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'))
 
-// const middleware = require("./helper/auth");
+const auth = require("./helper/auth");
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter")
 const ProductRouter = require("./controller/productController");
@@ -35,7 +35,7 @@ mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
 app.use("/", AccRouter);
-//  middleware.authenticateJWT : them vao ben duoi khi xong frontend dang ky, dang nhap
+//  auth: them vao ben duoi khi xong frontend dang ky, dang nhap
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
 app.use('/news', NewsRouter);

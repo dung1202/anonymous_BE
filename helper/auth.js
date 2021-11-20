@@ -16,6 +16,7 @@ async function verifyToken(token, secretKey){
 
 async function auth(req, res, next){
     let accessToken = req.headers.authorization
+
     if (!accessToken){
         res.status(403).send({error: 'No token provided'});
     }

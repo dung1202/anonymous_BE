@@ -5,7 +5,7 @@ const constants = require("../firebase_multer/constants");
 const firebase = require('../firebase_multer/filebase');
 
 router.get('/', (req, res) => {
-    Product.find().populate('User').exec((err, product) => {
+    Product.find().populate('userId').exec((err, product) => {
         if (err) throw err;
         res.json(product);
     });
@@ -15,7 +15,7 @@ router.get("/:id", (req, res) => {
     if (!req.params.id)
         res.status(400).send({ messError: 'not found id' })
     const id = { _id: req.params.id };
-    Product.findById(id).populate('User').exec((err, product) => {
+    Product.findById(id).populate('userId').exec((err, product) => {
         if (err) throw err
         res.json(product);
     })
@@ -32,36 +32,41 @@ router.delete("/:id", (req, res) => {
 });
 
 router.post('/', constants.upload.any("file"), async (req, res) => {
-    if (!req.files) {
-        return res.status(400).send("Error: No files found")
-    }
     const name = []
-    for (let i = 0; i < req.files.length; i++) {
-        const filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}`
-        const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
-        name.push(link)
-        const blob = firebase.bucket.file(filename)
+    if (req.files) {
 
-        const blobWriter = blob.createWriteStream({
-            metadata: {
-                contentType: req.files[i].mimetype
+        for (let i = 0; i < req.files.length; i++) {
+            const filename = ''
+            if (i !== 0) { filename = 'product' + '-' + `${req.body.userId}` + '-' + `${i + 1}` }
+            else {
+                filename = 'product' + '-' + `${req.body.userId}` + '-' + `img`
             }
-        })
+            const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(filename)}?alt=media`
+            name.push(link)
+            const blob = firebase.bucket.file(filename)
+            const blobWriter = blob.createWriteStream({
+                metadata: {
+                    contentType: req.files[i].mimetype
+                }
+            })
 
-        blobWriter.on('error', (err) => {
-            return console.log(err)
-        })
+            blobWriter.on('error', (err) => {
+                return console.log(err)
+            })
 
-        blobWriter.on('finish', () => {
-            res.status(200).send("File uploaded.")
-        })
+            blobWriter.on('finish', () => {
+                res.status(200).send("File uploaded.")
+            })
 
-        blobWriter.end(req.files[i].buffer)
+            blobWriter.end(req.files[i].buffer)
+        }
     }
 
-    let product = new Product({
-        listphotos: name
-    })
+    let product = new Product(req.body)
+    product.img = name[0]
+    name.splice(0, 1)
+    product.listphotos = name
+
     product.save((err) => {
         if (err) throw err;
         console.log('File save successfully');
@@ -102,6 +107,7 @@ router.put('/', constants.upload.any("file"), async (req, res) => {
     }
     const update = req.body
     update.listphotos = name
+    update.updateAt = Date.now(+new Date() + 7 * 60 * 60 * 1000)
     Product.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
         if (err) return res.send(err)
         res.json(result)
