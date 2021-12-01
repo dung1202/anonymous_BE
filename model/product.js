@@ -9,31 +9,13 @@ var userSchema = mongoose.Schema({
   listedPrice: Number,
   discountPrice: Number,
   is_hot: Boolean,
-  in_slider: Boolean,
   img: String,
-  listphotos: [
-    {
-      type: String,
-    },
-  ],
-  vote: [
-    {
-      user: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-      number: Number,
-      content: String
-    },
-  ],
+  listphotos: [String],
   quantity: Number,
   sold: Number,
   description: String,
-  tags: [
-    {
-      type: String,
-    },
-  ],
+  vote: Number,
+  tags: [String],
   supplier: String,
   createdAt: {
     type: Date,
