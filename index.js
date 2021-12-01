@@ -41,7 +41,7 @@ app.use("/", AccRouter);
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
 app.use("/news", NewsRouter);
-app.use("/slide", SliderRouter);
+app.use("/slider", SliderRouter);
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
