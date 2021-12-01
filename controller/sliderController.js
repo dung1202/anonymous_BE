@@ -16,7 +16,7 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   if (req.files) {
     for (let i = 0; i < req.files.length; i++) {
       const filename = "";
-      filename = "Slider" + "-" + "-" + `${i + 1}`;
+      filename = "Slider" + "-" + `${i + 1}`;
       const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(
         filename
       )}?alt=media`;
@@ -57,7 +57,7 @@ router.put("/", constants.upload.any("file"), async (req, res) => {
   if (req.files) {
     for (let i = 0; i < req.files.length; i++) {
       const filename = "";
-      filename = "Slider" + "-" + "-" + `${i + 1}`;
+      filename = "Slider" + "-" + `${i + 1}`;
       const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(
         filename
       )}?alt=media`;
