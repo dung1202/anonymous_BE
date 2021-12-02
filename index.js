@@ -17,6 +17,7 @@ const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter")
 const ProductRouter = require("./controller/productController");
 const NewsRouter = require('./routes/newsRouter');
+const CartRouter = require('./routes/cartRouter');
 
 
 var mongoDB_atlas = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -39,6 +40,7 @@ app.use("/", AccRouter);
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
 app.use('/news', NewsRouter);
+app.use('/cart', CartRouter);
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
