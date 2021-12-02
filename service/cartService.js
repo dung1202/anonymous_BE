@@ -46,7 +46,10 @@ async function Cart(user_id){
         });
         return cart;
     }
-    cart = {items: []};
+    cart = {
+        items: [],
+        totalPrice: 0
+    };
     return cart;
 }
 
