@@ -18,7 +18,7 @@ async function register(req, res){
     }
     catch(err) {
         console.log(err);
-        res.status(400).send(err);
+        res.status(400).send(err);  
     }
 }
 
