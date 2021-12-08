@@ -55,4 +55,15 @@ async function removeAll(req, res){
     }
 }
 
-module.exports = { getCart, addItem, changeQty, removeItem, removeAll };
+async function checkout(req, res){
+    try {
+        const result = await Service.checkout(req.body);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
+module.exports = { getCart, addItem, changeQty, removeItem, removeAll, checkout };

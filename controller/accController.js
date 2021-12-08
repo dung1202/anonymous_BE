@@ -33,4 +33,17 @@ async function getProfile(req, res){
     }
 }
 
-module.exports = { login, register, getProfile };
+async function checkToken(req, res){
+    try {
+        res.status(200).json({
+            success: true,
+            message: 'Token is valid'
+        });
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
+module.exports = { login, register, getProfile, checkToken };

@@ -1,5 +1,9 @@
-const Model = require('../model/cart');
+const { Cart_Model } = require('../model/cart');
 const { Types } = require('mongoose');
+const { generateToken } = require('../helper/auth');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 async function Cart(user_id){
     const pipeline = [
@@ -35,10 +39,9 @@ async function Cart(user_id){
             }
         }
     ]
-    let cart = await Model.aggregate(pipeline);
+    let cart = await Cart_Model.aggregate(pipeline);
     if (cart.length){
         cart = cart[0];
-        delete cart._id;
         cart.totalPrice = 0;
         cart.items.forEach( el => {
             el.totalPrice = el.product_id.discountPrice * el.quantity;
@@ -46,7 +49,7 @@ async function Cart(user_id){
         });
         return cart;
     }
-    cart = {items: []};
+    cart.totalPrice = 0;
     return cart;
 }
 
@@ -61,12 +64,12 @@ async function addItem(payload){
         product_id: product_id,
         quantity: 1,
     }
-    await Model.updateOne({user: payload.decoded._id}, {$push: {items: item}}, {upsert: true});
+    await Cart_Model.updateOne({user: payload.decoded._id}, {$push: {items: item}}, {upsert: true});
     return { message: 'Add item successfully.'};
 }
 
 async function changeQty(payload){
-    await Model.updateOne(
+    await Cart_Model.updateOne(
         {'items._id': payload.id},
         {
             $set: {
@@ -82,7 +85,7 @@ async function changeQty(payload){
 }
 
 async function removeItem(payload){
-    await Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}});
+    await Cart_Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}});
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -91,7 +94,7 @@ async function removeItem(payload){
 }
 
 async function removeAll(payload){
-    await Model.updateMany({user: payload.decoded._id}, {$set: {items: {}}});
+    await Cart_Model.updateMany({user: payload.decoded._id}, {$set: {items: {}}});
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -99,4 +102,10 @@ async function removeAll(payload){
     };
 }
 
-module.exports = { addItem, getCart, changeQty, removeItem, removeAll };
+async function checkout(payload){
+    const cart = await Cart(payload.decoded._id);
+    const token = generateToken({}, process.env.SECRET_KEY, 60 * 5)
+    return { cart, token };
+}
+
+module.exports = { addItem, getCart, changeQty, removeItem, removeAll, checkout };
