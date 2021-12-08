@@ -9,6 +9,7 @@ var userSchema = mongoose.Schema({
   listedPrice: Number,
   discountPrice: Number,
   is_hot: Boolean,
+  in_slider: Boolean,
   img: String,
   listphotos: [String],
   quantity: Number,
