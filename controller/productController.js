@@ -84,7 +84,6 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   product.sold = Number(product.sold);
   product.vote = Number(product.vote);
   product.tags = req.body.tags.split(" ");
-  name.splice(0, 1);
   product.listphotos = name;
 
   product.save((err) => {
@@ -140,7 +139,6 @@ router.put("/:id", constants.upload.any("file"), async (req, res) => {
       blobWriter.end(req.files[i].buffer);
     }
     update.img = name[0];
-    name.splice(0, 1);
     update.listphotos = name;
   } else {
     Product.findById(id).exec((err, product) => {
