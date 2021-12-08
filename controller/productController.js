@@ -76,14 +76,14 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
     }
   }
 
-  let product = new Product(req.body);
-  product.img = name[0];
+  const product = new Product(req.body);
+  product.img = name[0];console.log();
   product.listedPrice = Number(product.listedPrice);
   product.discountPrice = Number(product.discountPrice);
   product.quantity = Number(product.quantity);
   product.sold = Number(product.sold);
   product.vote = Number(product.vote);
-  product.tags = product.tags.split(" ");
+  product.tags = req.body.tags.split(" ");
   name.splice(0, 1);
   product.listphotos = name;
 
