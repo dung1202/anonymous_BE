@@ -35,7 +35,7 @@ router.delete("/:id", (req, res) => {
 
 router.post("/", constants.upload.any("file"), async (req, res) => {
   const name = [];
-  if (req.files) {
+  if (req.files.length > 0) {
     for (let i = 0; i < req.files.length; i++) {
       let filename = "";
       if (i !== 0) {
@@ -83,7 +83,7 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   product.quantity = Number(product.quantity);
   product.sold = Number(product.sold);
   product.vote = Number(product.vote);
-
+  update.tags = update.tags.split(" ");
   name.splice(0, 1);
   product.listphotos = name;
 
@@ -94,13 +94,14 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   res.json({ data: product });
 });
 
-router.put("/", constants.upload.any("file"), async (req, res) => {
-  if (!req.body.id) res.status(400).send({ messError: "not found id" });
-  const id = { _id: req.body.id };
-  const name = [];
-  if (req.files) {
+router.put("/:id", constants.upload.any("file"), async (req, res) => {
+  const id = { _id: req.params.id };
+  const update = req.body;
+  console.log(req.files);
+  if (req.files.length > 0) {
+    const name = [];
     for (let i = 0; i < req.files.length; i++) {
-      const filename = "";
+      let filename = "";
       if (i !== 0) {
         filename =
           "product" +
@@ -138,16 +139,21 @@ router.put("/", constants.upload.any("file"), async (req, res) => {
 
       blobWriter.end(req.files[i].buffer);
     }
+    update.img = name[0];
+    name.splice(0, 1);
+    update.listphotos = name;
+  } else {
+    Product.findById(id).exec((err, product) => {
+      console.log(product);
+      update.img = product.img;
+      update.listphotos = product.listphotos;
+    });
   }
-  const update = req.body;
-  update.img = name[0];
-  name.splice(0, 1);
-  update.listphotos = name;
   update.listedPrice = Number(update.listedPrice);
   update.discountPrice = Number(update.discountPrice);
   update.quantity = Number(update.quantity);
-  update.sold = Number(update.sold);
   update.vote = Number(update.vote);
+  update.tags = update.tags.split(" ");
   update.updateAt = Date.now(+new Date() + 7 * 60 * 60 * 1000);
   Product.findByIdAndUpdate(id, update, { new: true }, function (err, result) {
     if (err) return res.send(err);
