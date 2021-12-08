@@ -105,6 +105,8 @@ async function removeAll(payload){
 async function checkout(payload){
     const cart = await Cart(payload.decoded._id);
     const token = generateToken({}, process.env.SECRET_KEY, 60 * 5)
+//     const token = generateToken({}, process.env.SECRET_KEY, process.env.checkoutCartTokenLife);
+
     return { cart, token };
 }
 
