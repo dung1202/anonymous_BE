@@ -3,6 +3,7 @@ const Model = require('../model/user');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
+const Cart = require('../model/cart');
 
 dotenv.config();
 
@@ -46,6 +47,13 @@ async function register(payload){
         })
         const accessToken = await generateToken({_id: id}, process.env.SECRET_KEY, process.env.accessTokenLife);
         const { _id, hash, salt, role, ...user } = insertUser.toObject();
+        await new Cart({
+            user: id,
+            items: [],
+            totalPrice: 0
+        }).save( (err, data) => { 
+            if (err) throw err;
+        });
         return {
             message: 'Register successfully!',
             user,

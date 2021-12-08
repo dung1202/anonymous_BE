@@ -16,7 +16,9 @@ const auth = require("./helper/auth");
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter");
 const ProductRouter = require("./controller/productController");
-const NewsRouter = require("./routes/newsRouter");
+
+const NewsRouter = require('./routes/newsRouter');
+const CartRouter = require('./routes/cartRouter');
 const SliderRouter = require("./controller/sliderController");
 
 var mongoDB_atlas = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -40,8 +42,11 @@ app.use("/", AccRouter);
 //  auth: them vao ben duoi khi xong frontend dang ky, dang nhap
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
-app.use("/news", NewsRouter);
+
+app.use('/news', NewsRouter);
+app.use('/cart', CartRouter);
 app.use("/slider", SliderRouter);
+
 
 db.on("error", console.error.bind(console, "MongoDB connection error: "));
 
