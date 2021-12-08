@@ -83,7 +83,7 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   product.quantity = Number(product.quantity);
   product.sold = Number(product.sold);
   product.vote = Number(product.vote);
-  update.tags = update.tags.split(" ");
+  product.tags = product.tags.split(" ");
   name.splice(0, 1);
   product.listphotos = name;
 
