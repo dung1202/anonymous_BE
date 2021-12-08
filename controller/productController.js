@@ -37,11 +37,21 @@ router.post("/", constants.upload.any("file"), async (req, res) => {
   const name = [];
   if (req.files) {
     for (let i = 0; i < req.files.length; i++) {
-      const filename = "";
+      let filename = "";
       if (i !== 0) {
-        filename = "product" + "-" + `${req.body.userId}` + "-" + `${i + 1}`;
+        filename =
+          "product" +
+          "-" +
+          `${i + 1}` +
+          "-" +
+          new Date(+new Date() + 5 * 60 * 60 * 1000);
       } else {
-        filename = "product" + "-" + `${req.body.userId}` + "-" + `img`;
+        filename =
+          "product" +
+          "-" +
+          `img` +
+          "-" +
+          new Date(+new Date() + 5 * 60 * 60 * 1000);
       }
       const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(
         filename
@@ -92,9 +102,19 @@ router.put("/", constants.upload.any("file"), async (req, res) => {
     for (let i = 0; i < req.files.length; i++) {
       const filename = "";
       if (i !== 0) {
-        filename = "product" + "-" + `${req.body.userId}` + "-" + `${i + 1}`;
+        filename =
+          "product" +
+          "-" +
+          `${i + 1}` +
+          "-" +
+          new Date(+new Date() + 5 * 60 * 60 * 1000);
       } else {
-        filename = "product" + "-" + `${req.body.userId}` + "-" + `img`;
+        filename =
+          "product" +
+          "-" +
+          `img` +
+          "-" +
+          new Date(+new Date() + 5 * 60 * 60 * 1000);
       }
       const link = `https://firebasestorage.googleapis.com/v0/b/anonymous-b685e.appspot.com/o/${encodeURIComponent(
         filename
