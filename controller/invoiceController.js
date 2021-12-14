@@ -11,7 +11,6 @@ async function create(req, res){
     }
 }
 
-<<<<<<< HEAD
 async function getInvoice(req, res){
     try {
         const result = await Service.create(req);
@@ -46,6 +45,3 @@ async function deleteOne(req, res){
 }
 
 module.exports = { create, getInvoice, update, deleteOne };
-=======
-module.exports = { create };
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669

@@ -1,5 +1,4 @@
 const Model = require('../model/invoice');
-<<<<<<< HEAD
 const { Cart, removeAll } = require('../service/cartService');
 const { Types } = require('mongoose');
 
@@ -76,21 +75,3 @@ async function deleteOne(payload){
 }
 
 module.exports = { create, getInvoice, update, deleteOne };
-=======
-const { Types } = require('mongoose');
-
-async function create(payload){
-    let insertInvoice = {
-        user: Types.ObjectId(payload.decoded._id),
-        deliveryAddress: payload.deliveryAddress,
-        note: payload.note,
-        order_items: payload.order_items
-    }
-    await Model.create(insertInvoice);
-    return {
-        message: 'Order successfully'
-    }
-}
-
-module.exports = { create };
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
