@@ -12,13 +12,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-const auth = require("./helper/auth");
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter");
 const ProductRouter = require("./controller/productController");
 
 const NewsRouter = require('./routes/newsRouter');
 const CartRouter = require('./routes/cartRouter');
+const InvoiceRouter = require('./routes/invoiceRouter');
 const SliderRouter = require("./controller/sliderController");
 
 var mongoDB_atlas = `mongodb+srv://${process.env.USER_DB}:${process.env.PASSWORD}@anonymous.wq4br.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -39,12 +39,11 @@ mongoose.Promise = global.Promise;
 
 var db = mongoose.connection;
 app.use("/", AccRouter);
-//  auth: them vao ben duoi khi xong frontend dang ky, dang nhap
 app.use("/user", UserRouter);
 app.use("/product", ProductRouter);
-
 app.use('/news', NewsRouter);
 app.use('/cart', CartRouter);
+app.use('/invoice', InvoiceRouter);
 app.use("/slider", SliderRouter);
 
 
