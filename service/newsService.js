@@ -1,4 +1,5 @@
 const Model = require('../model/news');
+const { bucket } = require("../firebase_multer/filebase");
 
 async function createNews(payload){
     payload.creator_id = payload.decoded._id;

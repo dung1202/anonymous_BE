@@ -5,8 +5,9 @@ const schema = new Schema({
     creator: {type: String, require: true},
     creator_id: {type: Schema.Types.ObjectId, ref: 'User'},
     content: {type: String, require: true},
-    createdAt: {type: Date, default: new Date(+new Date() + 7*60*60*1000)},
-    updatedAt: {type: Date, default: new Date(+new Date() + 7*60*60*1000)}
+    image: {type: String},
+    createdAt: {type: Date, default: new Date(+new Date() + 5*60*60*1000)},
+    updatedAt: {type: Date, default: new Date(+new Date() + 5*60*60*1000)}
 });
 
 const Model = model('News', schema);

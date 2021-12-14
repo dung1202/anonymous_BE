@@ -46,15 +46,20 @@ async function Cart(user_id){
         }
     ]
     let cart = await Model.aggregate(pipeline);
-    cart = cart[0];
-    cart.totalPrice = 0;
-    if (cart.items.length){
-        cart.items.forEach( el => {
-            el.totalPrice = el.product_id.discountPrice * el.quantity;
-            cart.totalPrice += el.totalPrice;
-            console.log(cart.totalPrice, el.to)
-        });
-        return cart;
+    if (cart.length){
+        cart = cart[0];
+        cart.totalPrice = 0;
+        if (cart.items.length){
+            cart.items.forEach( el => {
+                el.totalPrice = el.product_id.discountPrice * el.quantity;
+                cart.totalPrice += el.totalPrice;
+            });
+            return cart;
+        }
+    }
+    cart = { 
+        items: [],
+        totalPrice: 0
     }
     return cart;
 }
@@ -68,9 +73,8 @@ async function addItem(payload){
     const product_id = Types.ObjectId(payload.product_id);
     const item = {
         product_id: product_id,
-        quantity: 1,
+        quantity: payload.quantity
     }
-    console.log(product_id)
     await Model.updateOne({user: payload.decoded._id}, {$push: {items: item}});
     return { message: 'Add item successfully.'};
 }
@@ -92,7 +96,7 @@ async function changeQty(payload){
 }
 
 async function removeItem(payload){
-    await Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}});
+    await Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}}, {upsert: true});
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -101,7 +105,7 @@ async function removeItem(payload){
 }
 
 async function removeAll(payload){
-    await Model.updateMany({user: payload.decoded._id}, {$set: {items: {}}});
+    await Model.updateMany({user: payload.decoded._id}, {$set: {items: []}});
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -109,10 +113,4 @@ async function removeAll(payload){
     };
 }
 
-async function checkout(payload){
-    const cart = await Cart(payload.decoded._id);
-    const token = generateToken({}, process.env.SECRET_KEY, 60 * 5)
-    return { cart, token };
-}
-
-module.exports = { addItem, getCart, changeQty, removeItem, removeAll, checkout };
+module.exports = { addItem, getCart, changeQty, removeItem, removeAll, Cart };
