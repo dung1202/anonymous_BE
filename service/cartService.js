@@ -46,7 +46,6 @@ async function Cart(user_id){
         }
     ]
     let cart = await Model.aggregate(pipeline);
-<<<<<<< HEAD
     if (cart.length){
         cart = cart[0];
         cart.totalPrice = 0;
@@ -61,17 +60,6 @@ async function Cart(user_id){
     cart = { 
         items: [],
         totalPrice: 0
-=======
-    cart = cart[0];
-    cart.totalPrice = 0;
-    if (cart.items.length){
-        cart.items.forEach( el => {
-            el.totalPrice = el.product_id.discountPrice * el.quantity;
-            cart.totalPrice += el.totalPrice;
-            console.log(cart.totalPrice, el.to)
-        });
-        return cart;
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
     }
     return cart;
 }
@@ -87,10 +75,6 @@ async function addItem(payload){
         product_id: product_id,
         quantity: payload.quantity
     }
-<<<<<<< HEAD
-=======
-    console.log(product_id)
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
     await Model.updateOne({user: payload.decoded._id}, {$push: {items: item}});
     return { message: 'Add item successfully.'};
 }
@@ -112,11 +96,7 @@ async function changeQty(payload){
 }
 
 async function removeItem(payload){
-<<<<<<< HEAD
     await Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}}, {upsert: true});
-=======
-    await Model.updateOne({user: payload.decoded._id}, {$pull: {items: {_id: payload.id}}});
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -125,11 +105,7 @@ async function removeItem(payload){
 }
 
 async function removeAll(payload){
-<<<<<<< HEAD
     await Model.updateMany({user: payload.decoded._id}, {$set: {items: []}});
-=======
-    await Model.updateMany({user: payload.decoded._id}, {$set: {items: {}}});
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
     const cart = await Cart(payload.decoded._id);
     return { 
         message: 'remove item successfully.',
@@ -137,14 +113,4 @@ async function removeAll(payload){
     };
 }
 
-<<<<<<< HEAD
 module.exports = { addItem, getCart, changeQty, removeItem, removeAll, Cart };
-=======
-async function checkout(payload){
-    const cart = await Cart(payload.decoded._id);
-    const token = generateToken({}, process.env.SECRET_KEY, 60 * 5)
-    return { cart, token };
-}
-
-module.exports = { addItem, getCart, changeQty, removeItem, removeAll, checkout };
->>>>>>> 8a7ba7513dcdd1969a525842e70ef8781253e669
