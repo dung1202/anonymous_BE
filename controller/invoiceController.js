@@ -13,7 +13,7 @@ async function create(req, res){
 
 async function getInvoice(req, res){
     try {
-        const result = await Service.create(req);
+        const result = await Service.getInvoice(req);
         res.status(200).json(result);
     }
     catch(err) {
@@ -24,24 +24,13 @@ async function getInvoice(req, res){
 
 async function update(req, res){
     try {
-        const result = await Service.create(req);
+        const result = await Service.update(req);
         res.status(200).json(result);
     }
     catch(err) {
         console.log(err);
-        res.status(400).sensd(err);
+        res.status(400).send(err);
     }
 }
 
-async function deleteOne(req, res){
-    try {
-        const result = await Service.create(req);
-        res.status(200).json(result);
-    }
-    catch(err) {
-        console.log(err);
-        res.status(400).sensd(err);
-    }
-}
-
-module.exports = { create, getInvoice, update, deleteOne };
+module.exports = { create, getInvoice, update };

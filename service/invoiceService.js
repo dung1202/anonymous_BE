@@ -1,15 +1,30 @@
 const Model = require('../model/invoice');
-const { Cart, removeAll } = require('../service/cartService');
+const Cart_Model = require('../model/cart');
+const { Cart } = require('../service/cartService');
 const { Types } = require('mongoose');
 
 async function create(payload){
-    const originData = await Cart(payload.decoded._id);
-    if (originData?.items.length == payload.order_items.length){
+    let originData = await Cart(payload.decoded._id);
+    let totalListPrice = 0;
+    let totalDiscountPrice = 0;
+    let products = [];
+    if (originData?.items?.length == payload.items.length){
         for (let i = 0; i < originData.items.length; i++) {
-            if (originData.items[i].product_id._id == payload.order_items[i].product_id._id){
-                if (originData.items[i].totalPrice != payload.order_items[i].totalPrice){
-                    throw { message: 'Something went wrong, please try again.'};
-                }
+            if (
+                originData.items[i].quantity === payload.items[i].quantity &&
+                originData.items[i].product_id._id.toString() === payload.items[i].product_id._id &&
+                originData.items[i].product_id.listedPrice === payload.items[i].product_id.listedPrice &&
+                originData.items[i].product_id.discountPrice === payload.items[i].product_id.discountPrice
+            ){
+                originData.items[i].discountPrice = originData.items[i].product_id.discountPrice * originData.items[i].quantity;
+                originData.items[i].listPrice = originData.items[i].product_id.listedPrice * originData.items[i].quantity;
+                totalDiscountPrice += originData.items[i].discountPrice;
+                totalListPrice += originData.items[i].listPrice
+                let { __v, totalPrice, ...data } = originData.items[i];
+                products.push(data)
+            }
+            else {
+                throw { message: 'Something went wrong, please try again.'};
             }
         }
     }
@@ -17,14 +32,17 @@ async function create(payload){
         throw { message: 'Something went wrong, please try again.'};
     }
     const insertInvoice = {
-        user: Types.ObjectId(payload.decoded._id),
+        user_id: Types.ObjectId(payload.decoded._id),
+        products: products,
+        totalListPrice: totalListPrice,
+        totalDiscountPrice: totalDiscountPrice,
+        paymentMethod: payload.paymentMethod,
         deliveryAddress: payload.deliveryAddress,
         note: payload.note,
-        payment: payload.payment,
-        order_items: payload.order_items
+        paymentMethod: payload.paymentMethod,
     }
     await Model.create(insertInvoice);
-    await Model.updateMany({user: payload.decoded._id}, {$pull: {items: []}});
+    // await Cart_Model.updateMany({user: payload.decoded._id}, {$pull: {items: []}});
     return {
         message: 'Order successfully',
     }
@@ -33,15 +51,19 @@ async function create(payload){
 async function search(payload){
     const page = payload.query.page - 1;
     const itemPerPage = 10;
-    const createAt = payload.query.createAt || 'desc'
+    const sort = payload.query.sort || 'desc'
     let data;
-    if (payload.query.sortby == 'user_id'){
-        data = await Model.findById(payload.body.user_id).sort({createdAt: createAt}).limit(itemPerPage).skip(itemPerPage * page);
+    if (payload.query.search === 'user_id'){
+        data = await Model.find({user_id: payload.body.user_id})
+        .sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
+        console.log(data)
     }
-    if (!payload.query.sortby){
-        data = await Model.find({}).sort({createdAt: createAt}).limit(itemPerPage).skip(itemPerPage * page);
+    else if (payload.query.search === 'all'){
+        data = await Model.find({}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
     }
-    data = await Model.find({isPay: payload.query.sortby}).sort({createdAt: createAt}).limit(itemPerPage).skip(itemPerPage * page);
+    else if (payload.query.search === 'status' || payload.query.search === 'paymentStatus') {
+        data = await Model.find({[payload.query.search]: payload.query.status}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page)
+    }
     return data;
 }
 
@@ -51,13 +73,21 @@ async function getInvoice(payload){
 }
 
 async function update(payload){
-    await Model.findByIdAndUpdate(payload.body.id, 
+    console.log(payload.body.decoded._id)
+    const { changeAction } = payload.body;
+    await Model.findByIdAndUpdate(payload.body.id,
         {
             $set: {
-                isPay: payload.body.isPay,
-                updatedAt: new Date(+new Date() + 5*60*60*1000)
+                [changeAction[0]]: changeAction[1],
+            },
+            $push: {
+                logs: {
+                    user_id: Types.ObjectId(payload.body.decoded._id),
+                    changeAction: changeAction,
+                    updatedAt: new Date(+new Date() + 5*60*60*1000)
+                }
             }
-        });
+        })
     const data = await search(payload);
     return { 
         message: 'Update successfully',
@@ -65,13 +95,4 @@ async function update(payload){
     };
 }
 
-async function deleteOne(payload){
-    await Model.findByIdAndDelete(payload.body.id);
-    const data = await search(payload);
-    return { 
-        message: 'delete successfully',
-        data: data
-    };
-}
-
-module.exports = { create, getInvoice, update, deleteOne };
+module.exports = { create, getInvoice, update };
