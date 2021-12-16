@@ -52,17 +52,17 @@ async function search(payload){
     const page = payload.query.page - 1;
     const itemPerPage = 10;
     const sort = payload.query.sort || 'desc'
+    const search = payload.query.search || 'all'
     let data;
-    if (payload.query.search === 'user_id'){
+    if (search === 'user_id'){
         data = await Model.find({user_id: payload.body.user_id})
         .sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
-        console.log(data)
     }
-    else if (payload.query.search === 'all'){
+    else if (search === 'all'){
         data = await Model.find({}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
     }
-    else if (payload.query.search === 'status' || payload.query.search === 'paymentStatus') {
-        data = await Model.find({[payload.query.search]: payload.query.status}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page)
+    else {
+        data = await Model.find({[search]: payload.query.status}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page)
     }
     return data;
 }
@@ -73,7 +73,6 @@ async function getInvoice(payload){
 }
 
 async function update(payload){
-    console.log(payload.body.decoded._id)
     const { changeAction } = payload.body;
     await Model.findByIdAndUpdate(payload.body.id,
         {
@@ -84,7 +83,7 @@ async function update(payload){
                 logs: {
                     user_id: Types.ObjectId(payload.body.decoded._id),
                     changeAction: changeAction,
-                    updatedAt: new Date(+new Date() + 5*60*60*1000)
+                    updatedAt: new Date(+new Date() + 7*60*60*1000)
                 }
             }
         })
