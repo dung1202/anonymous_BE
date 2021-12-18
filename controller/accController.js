@@ -46,4 +46,15 @@ async function checkToken(req, res){
     }
 }
 
-module.exports = { login, register, getProfile, checkToken };
+async function loginAdmin(req, res){
+    try {
+        const result = await Service.loginAdmin(req.body);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
+module.exports = { login, register, getProfile, checkToken, loginAdmin };

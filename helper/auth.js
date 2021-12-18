@@ -35,4 +35,25 @@ async function auth(req, res, next){
     }
 }
 
-module.exports = {generateToken, auth};
+async function authAdmin(req, res, next){
+    let accessToken = req.headers.authorization
+
+    if (!accessToken){
+        res.status(403).send({error: 'No token provided'});
+    }
+    else {
+        try {
+            accessToken = accessToken.replace('Bearer ', '');
+            req.body.decoded = await verifyToken(accessToken, process.env.SECRET_KEY);
+            const foundUser = await User.findById({_id: req.body.decoded._id}, {_id: 1, username: 1, role: 1});
+            if (foundUser?.role !== 'admin') throw {error: 'Unauthorized'};
+            next();
+        }
+        catch(err) {
+            console.log(err);
+            res.status(401).send({error: 'Unauthorized'});
+        }
+    }
+}
+
+module.exports = { generateToken, auth, authAdmin };

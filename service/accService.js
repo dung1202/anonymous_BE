@@ -44,6 +44,7 @@ async function register(payload){
             email: email,
             hash: hashPassword,
             salt: saltPassword,
+            role: payload.role
         })
         const accessToken = await generateToken({_id: id}, process.env.SECRET_KEY, process.env.accessTokenLife);
         const { _id, hash, salt, role, ...user } = insertUser.toObject();
@@ -67,11 +68,31 @@ async function register(payload){
 
 async function getProfile(payload){
     const foundUser = await Model.findById({_id: payload.decoded._id});
-    const { _id, hash, salt, role, ...user } = foundUser.toObject();
+    const { _id, hash, salt, ...user } = foundUser.toObject();
     return {
         message: 'Get profile successfully!',
         user
     };
 }
 
-module.exports = { login, register, getProfile };
+async function loginAdmin(payload){
+    const username = payload.username;
+    const password = payload.password;
+    const foundUser = await Model.findOne({username: username});
+    if (!foundUser?.role === 'admin' || !bcrypt.compareSync(password + foundUser.salt, foundUser.hash)){
+        return {
+            message:'Username or password are wrong'
+        };
+    }
+    else {
+        const accessToken = await generateToken({_id: foundUser._id}, process.env.SECRET_KEY, process.env.accessTokenLife);
+        const { _id, hash, salt, role, ...user } = foundUser.toObject();
+        return {
+            message: 'Login successfully!',
+            user,
+            accessToken
+        };
+    }
+}
+
+module.exports = { login, register, getProfile, loginAdmin };
