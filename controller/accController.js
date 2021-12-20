@@ -57,4 +57,15 @@ async function loginAdmin(req, res){
     }
 }
 
-module.exports = { login, register, getProfile, checkToken, loginAdmin };
+async function changePwd(req, res){
+    try {
+        const result = await Service.changePwd(req.body);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
+module.exports = { login, register, getProfile, checkToken, loginAdmin, changePwd };

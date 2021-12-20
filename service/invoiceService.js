@@ -74,25 +74,27 @@ async function getInvoice(payload){
 
 async function update(payload){
     const { changeAction } = payload.body;
-    if (changeAction.length !== 3 || changeAction[0] === 'paymentMethod' || changeAction[0] === 'paymentStatus' || changeAction[0] === 'status' || changeAction[0] === 'deliveryAddress' || changeAction[0] === 'note'){
-        await Model.findByIdAndUpdate(payload.body.id,
-            {
-                $set: {
-                    [changeAction[0]]: changeAction[1],
-                },
-                $push: {
-                    logs: {
-                        user_id: Types.ObjectId(payload.body.decoded._id),
-                        changeAction: changeAction,
-                        updatedAt: new Date(+new Date() + 7*60*60*1000)
+    if (changeAction?.length === 3){
+        if (changeAction[0] === 'paymentMethod' || changeAction[0] === 'paymentStatus' || changeAction[0] === 'status' || changeAction[0] === 'deliveryAddress' || changeAction[0] === 'note'){
+            await Model.findByIdAndUpdate(payload.body.id,
+                {
+                    $set: {
+                        [changeAction[0]]: changeAction[1],
+                    },
+                    $push: {
+                        logs: {
+                            user_id: Types.ObjectId(payload.body.decoded._id),
+                            changeAction: changeAction,
+                            updatedAt: new Date(+new Date() + 7*60*60*1000)
+                        }
                     }
-                }
-            })
-        const data = await search(payload);
-        return { 
-            message: 'Update successfully',
-            data: data
-        };
+                })
+                const data = await search(payload);
+                return { 
+                    message: 'Update successfully',
+                    data: data
+                };
+        }
     }
     throw { message: 'invalid request' };
 }

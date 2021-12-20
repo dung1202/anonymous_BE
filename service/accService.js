@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
 const Cart = require('../model/cart');
+const { validPassword } = require('../middleware/accMiddleware');
 
 dotenv.config();
 
@@ -95,4 +96,26 @@ async function loginAdmin(payload){
     }
 }
 
-module.exports = { login, register, getProfile, loginAdmin };
+async function changePwd(payload){
+    const { oldPassword, newPassword } = payload;
+    const foundUser = await Model.findById(payload.decoded._id);
+    if (!validPassword(payload.password)){
+        throw {error: 'Something went wrong. Please try again!'};
+    }
+    if (!oldPassword || !bcrypt.compareSync(oldPassword + foundUser.salt, foundUser.hash)){
+        return { message: 'Wrong password' };
+    }
+    const saltPassword = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(newPassword + saltPassword, 10);
+    await Model.findByIdAndUpdate(payload.decoded._id, {
+        $set: {
+            salt: saltPassword,
+            hash: hashPassword
+        }
+    });
+    return {
+        message: 'Change password successfully'
+    }
+}
+
+module.exports = { login, register, getProfile, loginAdmin, changePwd };
