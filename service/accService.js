@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const Model = require('../model/user');
+const Invoice = require('../model/invoice');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
@@ -80,7 +81,7 @@ async function loginAdmin(payload){
     const username = payload.username;
     const password = payload.password;
     const foundUser = await Model.findOne({username: username});
-    if (!foundUser?.role === 'admin' || !bcrypt.compareSync(password + foundUser.salt, foundUser.hash)){
+    if (foundUser?.role !== 'admin' || !bcrypt.compareSync(password + foundUser.salt, foundUser.hash)){
         return {
             message:'Username or password are wrong'
         };
@@ -118,4 +119,9 @@ async function changePwd(payload){
     }
 }
 
-module.exports = { login, register, getProfile, loginAdmin, changePwd };
+async function getInvoice(payload){
+    data = await Invoice.find({user_id: payload.decoded._id}, {user_id: 0, logs: 0}).sort({createdAt: 'desc'});
+    return { data };
+}
+
+module.exports = { login, register, getProfile, loginAdmin, changePwd, getInvoice };

@@ -14,8 +14,9 @@ app.use(morgan("dev"));
 
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter");
-const ProductRouter = require("./controller/productController");
+const { router } = require("./controller/productController");
 const NewsRouter = require('./routes/newsRouter');
+const product_router = require('./routes/productRouter');
 const CartRouter = require('./routes/cartRouter');
 const InvoiceRouter = require('./routes/invoiceRouter');
 
@@ -39,7 +40,8 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 app.use("/", AccRouter);
 app.use("/user", UserRouter);
-app.use("/product", ProductRouter);
+app.use("/product", router);
+app.use("/product", product_router);
 app.use('/news', NewsRouter);
 app.use('/cart', CartRouter);
 app.use('/invoice', InvoiceRouter);

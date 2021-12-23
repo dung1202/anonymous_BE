@@ -1,5 +1,6 @@
 const Model = require('../model/news');
-const { bucket } = require("../firebase_multer/filebase");
+
+var itemPerPage = 10;
 
 async function createNews(payload){
     payload.creator_id = payload.decoded._id;
@@ -13,17 +14,45 @@ async function createNews(payload){
 }
 
 async function getNews(payload){
-    const data = await Model.find({_id: payload.id});
+    const data = await Model.find({_id: payload.id}, {creator_id: 0});
     if (data.length){
-        return {data};
+        return { data };
     }
-    return {message: 'title was not found'};
+    return { message: 'title was not found' };
+}
+
+async function getByTag(payload){
+    const totalMatch = await Model.countDocuments({ tags: { $elemMatch: { $eq: payload.tag } }});
+    const page = payload.page - 1;
+    const tag = payload.tag.replace(/^%23/, '#');
+    const data = await Model.find({ tags: { $elemMatch: { $eq: tag } }}, {creator_id: 0}).sort({createdAt: 'desc'}).limit(itemPerPage).skip(itemPerPage * page);
+    if (data.length){
+        return {
+            totalMatch: totalMatch,
+            totalPage: parseInt(totalMatch / itemPerPage) + 1,
+            data: data
+        };
+    }
+    return { message: 'news was not found' };
+}
+
+async function getByTitle(payload){
+    const totalMatch = await Model.countDocuments({ title: { $regex: payload.title }});
+    const page = payload.page - 1;
+    const data = await Model.find({ title: { $regex: payload.title }}, { creator_id: 0}).sort({createdAt: 'desc'}).limit(itemPerPage).skip(itemPerPage * page);
+    if (data.length){
+        return {
+            totalMatch: totalMatch,
+            totalPage: parseInt(totalNews / itemPerPage) + 1,
+            data: data
+        };
+    }
+    return { message: 'news was not found' };
 }
 
 async function getPage(payload){
     const totalNews = await Model.countDocuments();
     const page = payload.page - 1;
-    const itemPerPage = 10;
     const data = await Model.find({}, {creator_id: 0}).sort({createdAt: 'desc'}).limit(itemPerPage).skip(itemPerPage * page);
     return {
         totalNews: totalNews,
@@ -58,6 +87,8 @@ async function deleteNews(payload){
 module.exports = {
     createNews,
     getNews,
+    getByTag,
+    getByTitle,
     getPage,
     getNewsByUser,
     updateNews,

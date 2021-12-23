@@ -3,6 +3,7 @@ const router = express.Router();
 const Product = require("../model/product");
 const constants = require("../firebase_multer/constants");
 const firebase = require("../firebase_multer/filebase");
+const Service = require('../service/productService');
 
 router.get("/", (req, res) => {
   Product.find()
@@ -159,4 +160,15 @@ router.put("/:id", constants.upload.any("file"), async (req, res) => {
   });
 });
 
-module.exports = router;
+async function getByTag(req, res){
+  try {
+    const result = await Service.getByTag(req.query);
+    res.status(200).json(result);
+  }
+  catch(err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+}
+
+module.exports = { router, getByTag };

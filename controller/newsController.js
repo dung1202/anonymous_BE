@@ -22,6 +22,29 @@ async function getNews(req, res){
     }
 }
 
+
+async function getByTag(req, res){
+    try {
+        const result = await Service.getByTag(req.query);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
+async function getByTitle(req, res){
+    try {
+        const result = await Service.getByTitle(req.query);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).send(err);
+    }
+}
+
 async function getPage(req, res){
     try {
         const result = await Service.getPage(req.query);
@@ -69,6 +92,8 @@ async function deleteNews(req, res){
 module.exports = {
     createNews,
     getNews,
+    getByTag,
+    getByTitle,
     getPage,
     getNewsByUser,
     updateNews,

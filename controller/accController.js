@@ -33,6 +33,17 @@ async function getProfile(req, res){
     }
 }
 
+async function getInvoice(req, res){
+    try {
+        const result = await Service.getInvoice(req.body);
+        res.status(200).json(result);
+    }
+    catch(err) {
+        console.log(err);
+        res.status(400).sensd(err);
+    }
+}
+
 async function checkToken(req, res){
     try {
         res.status(200).json({
@@ -68,4 +79,4 @@ async function changePwd(req, res){
     }
 }
 
-module.exports = { login, register, getProfile, checkToken, loginAdmin, changePwd };
+module.exports = { login, register, getProfile, checkToken, loginAdmin, changePwd, getInvoice };
