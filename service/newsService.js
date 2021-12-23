@@ -43,7 +43,7 @@ async function getByTitle(payload){
     if (data.length){
         return {
             totalMatch: totalMatch,
-            totalPage: parseInt(totalNews / itemPerPage) + 1,
+            totalPage: parseInt(totalMatch / itemPerPage) + 1,
             data: data
         };
     }
