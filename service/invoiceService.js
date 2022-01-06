@@ -41,8 +41,14 @@ async function create(payload){
         note: payload.note,
         paymentMethod: payload.paymentMethod,
     }
-    await Model.create(insertInvoice);
-    // await Cart_Model.updateMany({user: payload.decoded._id}, {$pull: {items: []}});
+    await Model.create(insertInvoice).populate({ 
+        path: 'products',
+        populate: {
+            path: 'product_id',
+            model: 'Product'
+        }
+    });;
+    await Cart_Model.updateMany({user: payload.decoded._id}, {$pull: {items: {}}});
     return {
         message: 'Order successfully',
     }
@@ -59,10 +65,30 @@ async function search(payload){
         .sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
     }
     else if (search === 'all'){
-        data = await Model.find({}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
+        data = await Model.find({})
+        .sort({createdAt: sort})
+        .limit(itemPerPage)
+        .skip(itemPerPage * page)
+        .populate({ 
+            path: 'products',
+            populate: {
+                path: 'product_id',
+                model: 'Product'
+            }
+        });;
     }
     else {
-        data = await Model.find({[search]: payload.query.status}).sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page)
+        data = await Model.find({[search]: payload.query.status})
+        .sort({createdAt: sort})
+        .limit(itemPerPage)
+        .skip(itemPerPage * page)
+        .populate({ 
+            path: 'products',
+            populate: {
+                path: 'product_id',
+                model: 'Product'
+            }
+        });
     }
     return data;
 }

@@ -17,6 +17,7 @@ const schema = new Schema({
         ward: {type: String, default: ''},
         detail: {type: String, default: ''},
     },
+    subscribeToNewsLetter: {type: Boolean, default: true},
     createdAt: {type: Date, default: new Date(+new Date() + 5*60*60*1000)}
 });
 

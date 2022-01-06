@@ -39,7 +39,8 @@ async function getByTag(payload){
 async function getByTitle(payload){
     const totalMatch = await Model.countDocuments({ title: { $regex: payload.title }});
     const page = payload.page - 1;
-    const data = await Model.find({ title: { $regex: payload.title }}, { creator_id: 0}).sort({createdAt: 'desc'}).limit(itemPerPage).skip(itemPerPage * page);
+    const regex = new RegExp(payload.title.toLowerCase(), "i")
+    const data = await Model.find({ title: { $regex: regex }}, { creator_id: 0}).sort({createdAt: 'desc'}).limit(itemPerPage).skip(itemPerPage * page);
     if (data.length){
         return {
             totalMatch: totalMatch,

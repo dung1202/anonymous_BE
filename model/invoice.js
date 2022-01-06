@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const invoice = new Schema({
     user_id: {type: Schema.Types.ObjectId, ref: 'User', require: true},
     products: [{
-        _id: {type: Schema.Types.ObjectId, require: true},
+        product_id: {type: Schema.Types.ObjectId, ref: 'product', require: true},
         listPrice: {type: Number, require: true},
         discountPrice: {type: Number, require: true},
         quantity: {type: Number, require: true}
