@@ -6,11 +6,13 @@ const PORT = process.env.PORT || 4000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 const morgan = require("morgan");
+const flash = require('connect-flash');
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
+app.use(flash());
 
 const UserRouter = require("./controller/userController");
 const AccRouter = require("./routes/accRouter");

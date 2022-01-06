@@ -171,4 +171,15 @@ async function getByTag(req, res){
   }
 }
 
-module.exports = { router, getByTag };
+async function getByName(req, res){
+  try {
+    const result = await Service.getByName(req.query);
+    res.status(200).json(result);
+  }
+  catch(err) {
+    console.log(err);
+    res.status(400).send(err);
+  }
+}
+
+module.exports = { router, getByTag, getByName };
