@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const Model = require('../model/user');
 const Invoice = require('../model/invoice');
-const NewsLetter = require('../model/newsletter');
+const NewsLetter = require('../model/newsletters');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
