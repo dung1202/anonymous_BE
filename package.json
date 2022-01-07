@@ -36,5 +36,8 @@
     "url": "https://github.com/dung1202/anonymous_BE/issues"
   },
   "homepage": "https://github.com/dung1202/anonymous_BE#readme",
-  "description": ""
+  "description": "",
+  "engines": {
+    "node": "16.x"
+  }
 }
