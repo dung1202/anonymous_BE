@@ -1,7 +1,7 @@
 const dotenv = require('dotenv');
 const Model = require('../model/user');
 const Invoice = require('../model/invoice');
-const NewsLetter = require('../model/newsletters');
+const NewsLetter = require('../model/newsLetter');
 const bcrypt = require('bcrypt');
 const { Types } = require('mongoose');
 const { generateToken } = require('../helper/auth');
@@ -136,14 +136,21 @@ async function getInvoice(payload){
 }
 
 async function forgotPassword(payload){
-    const OTP_Code = number(6);
+    const newPassword = number(8);
     let content = `<div style="padding: 10px; background-color: #003375">
         <div style="padding: 10px; background-color: white;">
             <h4 style="color: #0085ff">Voucher-Hunter send verify code</h4>
-            <span style="color: black">OTP Code: ${OTP_Code}</span>
+            <span style="color: black">Your Password: ${newPassword}</span>
         </div>
     </div>`;
-    const foundUser = await Model.findOne({username: payload.username}, {email: 1});
+    const saltPassword = bcrypt.genSaltSync(10);
+    const hashPassword = bcrypt.hashSync(newPassword + saltPassword, 10);
+    const foundUser = await Model.findOneAndUpdate({ username }, {
+        $set: {
+            salt: saltPassword,
+            hash: hashPassword
+        }
+    });
     if (!foundUser){
         return { message: 'Cannot find user' }
     }
@@ -162,8 +169,7 @@ async function forgotPassword(payload){
         }
     })
     return {
-        message: "We've send a mail contain OTP Code verify to email of account",
-        OTP_Code: OTP_Code
+        message: "We've send a mail contain new password to email of account, please check your email",
     };
 }
 
@@ -189,7 +195,6 @@ async function changePwdAfterVerifyOTP(payload){
 async function sendNewsLetter(payload){
     const content = payload.content;
     let foundEmails = await Model.find({ subscribeToNewsLetter: true }, { email: 1, _id: 0 });
-    console.log(foundEmails)
     let emails = foundEmails.map( el => el.email );
     let options = {
         from: process.env.email,

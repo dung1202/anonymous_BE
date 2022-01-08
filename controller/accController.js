@@ -90,17 +90,6 @@ async function forgotPassword(req, res){
     }
 }
 
-async function changePwdAfterVerifyOTP(req, res){
-    try {
-        const result = await Service.changePwdAfterVerifyOTP(req.body);
-        res.status(200).json(result);
-    }
-    catch(err) {
-        console.log(err);
-        res.status(400).send(err);
-    }
-}
-
 async function sendNewsLetter(req, res){
     try {
         const result = await Service.sendNewsLetter(req.body);
@@ -112,4 +101,4 @@ async function sendNewsLetter(req, res){
     }
 }
 
-module.exports = { login, register, getProfile, checkToken, loginAdmin, changePwd, sendNewsLetter,  getInvoice, forgotPassword, changePwdAfterVerifyOTP };
+module.exports = { login, register, getProfile, checkToken, loginAdmin, changePwd, sendNewsLetter,  getInvoice, forgotPassword };

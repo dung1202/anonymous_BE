@@ -47,7 +47,7 @@ async function create(payload){
             path: 'product_id',
             model: 'Product'
         }
-    });;
+    });
     await Cart_Model.updateMany({user: payload.decoded._id}, {$pull: {items: {}}});
     return {
         message: 'Order successfully',
@@ -60,11 +60,14 @@ async function search(payload){
     const sort = payload.query.sort || 'desc'
     const search = payload.query.search || 'all'
     let data;
+    let totalMatch;
     if (search === 'user_id'){
+        totalMatch = await Model.countDocuments({user_id: payload.body.user_id});
         data = await Model.find({user_id: payload.body.user_id})
         .sort({createdAt: sort}).limit(itemPerPage).skip(itemPerPage * page);
     }
     else if (search === 'all'){
+        totalMatch = await Model.countDocuments({});
         data = await Model.find({})
         .sort({createdAt: sort})
         .limit(itemPerPage)
@@ -75,9 +78,10 @@ async function search(payload){
                 path: 'product_id',
                 model: 'Product'
             }
-        });;
+        });
     }
     else {
+        totalMatch = await Model.countDocuments({[search]: payload.query.status});
         data = await Model.find({[search]: payload.query.status})
         .sort({createdAt: sort})
         .limit(itemPerPage)
@@ -90,20 +94,23 @@ async function search(payload){
             }
         });
     }
-    return data;
+    return { 
+        totalMatch,
+        totalPage: parseInt(totalMatch / itemPerPage) + 1,
+        data
+    };
 }
 
 async function getInvoice(payload){
     const data = await search(payload);
-    return { data };
+    return data;
 }
 
 async function update(payload){
     const { changeAction } = payload.body;
     if (changeAction?.length === 3){
         if (changeAction[0] === 'paymentMethod' || changeAction[0] === 'paymentStatus' || changeAction[0] === 'status' || changeAction[0] === 'deliveryAddress' || changeAction[0] === 'note'){
-            await Model.findByIdAndUpdate(payload.body.id,
-                {
+            await Model.findByIdAndUpdate(payload.body.id, {
                     $set: {
                         [changeAction[0]]: changeAction[1],
                     },
@@ -115,11 +122,8 @@ async function update(payload){
                         }
                     }
                 })
-                const data = await search(payload);
-                return { 
-                    message: 'Update successfully',
-                    data: data
-                };
+            const data = await search(payload);
+            return data;
         }
     }
     throw { message: 'invalid request' };

@@ -11,7 +11,6 @@ router.post('/auth/checktoken', auth, Controller.checkToken);
 router.post('/admin/login', Controller.loginAdmin);
 router.put('/auth/changepwd', auth, Controller.changePwd);
 router.post('/forgot-password', Controller.forgotPassword);
-router.put('/create-new-password', Controller.changePwdAfterVerifyOTP);
 router.post('/auth/send-news-letter', authAdmin, Controller.sendNewsLetter);
 
 module.exports = router;
