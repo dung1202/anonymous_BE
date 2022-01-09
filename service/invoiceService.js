@@ -12,9 +12,7 @@ async function create(payload){
         for (let i = 0; i < originData.items.length; i++) {
             if (
                 originData.items[i].quantity === payload.items[i].quantity &&
-                originData.items[i].product_id._id.toString() === payload.items[i].product_id._id &&
-                originData.items[i].product_id.listedPrice === payload.items[i].product_id.listedPrice &&
-                originData.items[i].product_id.discountPrice === payload.items[i].product_id.discountPrice
+                originData.items[i].product_id._id.toString() === payload.items[i].product_id
             ){
                 originData.items[i].discountPrice = originData.items[i].product_id.discountPrice * originData.items[i].quantity;
                 originData.items[i].listPrice = originData.items[i].product_id.listedPrice * originData.items[i].quantity;
