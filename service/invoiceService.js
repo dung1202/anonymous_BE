@@ -41,13 +41,7 @@ async function create(payload){
         note: payload.note,
         paymentMethod: payload.paymentMethod,
     }
-    await Model.create(insertInvoice).populate({ 
-        path: 'products',
-        populate: {
-            path: 'product_id',
-            model: 'Product'
-        }
-    });
+    await Model.create(insertInvoice);
     await Cart_Model.updateMany({user: payload.decoded._id}, {$pull: {items: {}}});
     return {
         message: 'Order successfully',
