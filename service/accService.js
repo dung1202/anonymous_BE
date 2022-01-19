@@ -123,7 +123,7 @@ async function changePwd(payload){
 }
 
 async function getInvoice(payload){
-    data = await Invoice.find({user_id: payload.decoded._id}, {user_id: 0, logs: 0})
+    data = await Invoice.find({user_id: payload.decoded._id}, {user_id: 0})
     .sort({createdAt: 'desc'})
     .populate({ 
         path: 'products',
